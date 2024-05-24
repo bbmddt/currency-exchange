@@ -1,4 +1,4 @@
-package currencyExchangeService
+package service
 
 import (
 	"encoding/json"
