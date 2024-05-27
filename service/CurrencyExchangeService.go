@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	"regexp"
 	"strconv"
 	"strings"
 )
@@ -62,6 +61,7 @@ func (s *CurrencyExchangeService) Convert(source, target string, amount string) 
 	}
 
 	convertedAmount := parsedAmount * s.rates.Currencies[source][target]
+	fmt.Printf("convertedAmount:%v \n", convertedAmount)
 	roundedAmount := fmt.Sprintf("%.2f", convertedAmount)
 
 	finalAmount := addCommas(roundedAmount)
@@ -73,16 +73,31 @@ func addCommas(numStr string) string {
 	parts := strings.Split(numStr, ".")
 	integerPart := parts[0]
 
-	re := regexp.MustCompile(`(\d+)(\d{3})`)
-	for {
-		integerPart = re.ReplaceAllString(integerPart, "$1,$2")
-		if !strings.Contains(integerPart, ",") {
-			break
+	var result strings.Builder
+	count := 0
+
+	for i := len(integerPart) - 1; i >= 0; i-- {
+		if count == 3 {
+			result.WriteString(",")
+			count = 0
 		}
+		result.WriteByte(integerPart[i])
+		count++
 	}
 
+	// Reverse the string
+	finalIntegerPart := reverse(result.String())
+
 	if len(parts) > 1 {
-		return integerPart + "." + parts[1]
+		return finalIntegerPart + "." + parts[1]
 	}
-	return integerPart
+	return finalIntegerPart
+}
+
+func reverse(s string) string {
+	runes := []rune(s)
+	for i, j := 0, len(runes)-1; i < j; i, j = i+1, j-1 {
+		runes[i], runes[j] = runes[j], runes[i]
+	}
+	return string(runes)
 }

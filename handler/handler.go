@@ -35,3 +35,13 @@ func (h *Handler) Convert(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
 }
+
+// Test func print test ok with Handler
+func (h *Handler) Test(w http.ResponseWriter, r *http.Request) {
+	response := map[string]string{
+		"msg": "success",
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(response)
+}
